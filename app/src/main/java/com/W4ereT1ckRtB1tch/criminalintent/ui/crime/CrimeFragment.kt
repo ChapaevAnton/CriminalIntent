@@ -1,4 +1,4 @@
-package com.W4ereT1ckRtB1tch.criminalintent.ui
+package com.W4ereT1ckRtB1tch.criminalintent.ui.crime
 
 import android.os.Bundle
 import android.text.Editable
