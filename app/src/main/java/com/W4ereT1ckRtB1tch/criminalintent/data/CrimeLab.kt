@@ -33,12 +33,8 @@ class CrimeLab private constructor(context: Context) {
     }
 
     fun getCrime(id: UUID): Crime? {
-        for (crime in crimes) {
-            if (crime.id == id) {
-                return crime
-            }
-        }
-        return null
+
+        return crimes.find { it.id == id }
     }
 
 }
