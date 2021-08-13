@@ -17,7 +17,7 @@ import java.util.*
 
 class CrimeFragment : Fragment() {
 
-    private var mCrime: Crime? = null
+    private lateinit var mCrime: Crime
     private lateinit var mTitleFiled: EditText
     private lateinit var mSolvedField: AppCompatCheckBox
     private lateinit var mDateButton: Button
@@ -41,7 +41,11 @@ class CrimeFragment : Fragment() {
 
         val crimeId: UUID = arguments?.getSerializable(ARG_CRIME_ID) as UUID
 
-        mCrime = CrimeLab[requireActivity()]?.getCrime(crimeId)
+        CrimeLab[requireActivity()]?.getCrime(crimeId).let {
+            if (it != null) {
+                mCrime = it
+            }
+        }
     }
 
 
@@ -59,22 +63,22 @@ class CrimeFragment : Fragment() {
         mSolvedField = view.findViewById(R.id.crime_solved)
         mDateButton = view.findViewById(R.id.crime_date)
 
-        mCrime?.let { mTitleFiled.setText(it.title) }
+        mTitleFiled.setText(mCrime.title)
         mTitleFiled.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                mCrime?.title = s.toString()
+                mCrime.title = s.toString()
             }
 
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        mDateButton.text = mCrime?.date.toString()
+        mDateButton.text = mCrime.date.toString()
 
-        mCrime?.let { mSolvedField.isChecked = it.solved }
+        mSolvedField.isChecked = mCrime.solved
         mSolvedField.setOnCheckedChangeListener { _, isChecked ->
-            mCrime?.solved = isChecked
+            mCrime.solved = isChecked
         }
 
     }

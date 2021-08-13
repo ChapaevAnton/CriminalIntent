@@ -13,6 +13,7 @@ import com.W4ereT1ckRtB1tch.criminalintent.R
 import com.W4ereT1ckRtB1tch.criminalintent.data.Crime
 import com.W4ereT1ckRtB1tch.criminalintent.data.CrimeLab
 import com.W4ereT1ckRtB1tch.criminalintent.ui.crime.CrimeActivity
+import com.W4ereT1ckRtB1tch.criminalintent.ui.crime.CrimePagerActivity
 
 class CrimeListFragment : Fragment() {
 
@@ -55,11 +56,14 @@ class CrimeListFragment : Fragment() {
         } else {
 
             //OPTIMIZE uses notifyItemChanged(int)
+
+            //FIXME no update item resume from CrimePagerActivity
             if (updatePosition > -1) {
-                crimeAdapter?.notifyItemChanged(updatePosition);
-                updatePosition = -1;
+                //crimeAdapter?.notifyItemChanged(updatePosition)
+                crimeAdapter?.notifyDataSetChanged()
+                updatePosition = -1
             } else {
-                crimeAdapter?.notifyDataSetChanged();
+                crimeAdapter?.notifyDataSetChanged()
             }
         }
     }
@@ -89,7 +93,7 @@ class CrimeListFragment : Fragment() {
 
         override fun onClick(view: View?) {
             updatePosition = adapterPosition
-            val intent = CrimeActivity.newIntent(requireActivity(), mCrime.id)
+            val intent = CrimePagerActivity.newIntent(requireActivity(), mCrime.id)
             startActivity(intent)
         }
 
