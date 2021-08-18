@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.text.format.DateFormat.getDateFormat
+import android.text.format.DateFormat.*
 
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +18,7 @@ import com.W4ereT1ckRtB1tch.criminalintent.R
 import com.W4ereT1ckRtB1tch.criminalintent.data.Crime
 import com.W4ereT1ckRtB1tch.criminalintent.data.CrimeLab
 import com.W4ereT1ckRtB1tch.criminalintent.ui.dialog.DatePickerFragment
+import com.W4ereT1ckRtB1tch.criminalintent.ui.dialog.TimePickerFragment
 import java.text.DateFormat
 import java.util.*
 
@@ -27,12 +28,15 @@ class CrimeFragment : Fragment() {
     private lateinit var mTitleFiled: EditText
     private lateinit var mSolvedField: AppCompatCheckBox
     private lateinit var mDateButton: Button
+    private lateinit var mTimeButton: Button
     private lateinit var dateFormat: DateFormat
+    private lateinit var timeFormat: DateFormat
 
     companion object {
 
         private const val ARG_CRIME_ID = "crime_id"
         private const val DIALOG_DATE = "DialogDate"
+        private const val DIALOG_TIME = "DialogTime"
         private const val REQUEST_DATE = 0
 
         fun newInstance(crimeId: UUID): CrimeFragment {
@@ -49,6 +53,7 @@ class CrimeFragment : Fragment() {
 
         val crimeId: UUID = arguments?.getSerializable(ARG_CRIME_ID) as UUID
         dateFormat = getDateFormat(requireActivity())
+        timeFormat = getTimeFormat(requireActivity())
         CrimeLab[requireActivity()]?.getCrime(crimeId).let {
             if (it != null) {
                 mCrime = it
@@ -69,6 +74,7 @@ class CrimeFragment : Fragment() {
         mTitleFiled = view.findViewById(R.id.crime_title)
         mSolvedField = view.findViewById(R.id.crime_solved)
         mDateButton = view.findViewById(R.id.crime_date)
+        mTimeButton = view.findViewById(R.id.crime_time)
 
         mTitleFiled.setText(mCrime.title)
         mTitleFiled.addTextChangedListener(object : TextWatcher {
@@ -81,13 +87,19 @@ class CrimeFragment : Fragment() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        updateDate()
+        updateDateTime()
         mDateButton.setOnClickListener {
             val fragmentManager = parentFragmentManager
             val dialog = DatePickerFragment.newInstance(mCrime.date)
             // FIXME: 18.08.2021 deprecated
             dialog.setTargetFragment(this, REQUEST_DATE)
             dialog.show(fragmentManager, DIALOG_DATE)
+        }
+        mTimeButton.setOnClickListener {
+
+            val fragmentManager = parentFragmentManager
+            val dialog = TimePickerFragment.newInstance(mCrime.time)
+            dialog.show(fragmentManager, DIALOG_TIME)
         }
 
         mSolvedField.isChecked = mCrime.solved
@@ -103,13 +115,14 @@ class CrimeFragment : Fragment() {
             REQUEST_DATE -> {
                 val date = data?.getSerializableExtra(DatePickerFragment.EXTRA_DATE) as Date
                 mCrime.date = date
-                updateDate()
+                updateDateTime()
             }
         }
     }
 
-    private fun updateDate() {
+    private fun updateDateTime() {
         mDateButton.text = dateFormat.format(mCrime.date)
+        mTimeButton.text = timeFormat.format(mCrime.time)
     }
 
 }
