@@ -1,9 +1,9 @@
-package com.W4ereT1ckRtB1tch.criminalintent.ui.crime
+package com.W4ereT1ckRtB1tch.criminalintent.ui.fragment.crime
 
 import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.Fragment
-import com.W4ereT1ckRtB1tch.criminalintent.SingleFragmentActivity
+import com.W4ereT1ckRtB1tch.criminalintent.ui.fragment.SingleFragmentActivity
 import java.util.*
 
 

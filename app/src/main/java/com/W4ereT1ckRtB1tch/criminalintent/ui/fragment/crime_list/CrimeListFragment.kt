@@ -1,6 +1,7 @@
-package com.W4ereT1ckRtB1tch.criminalintent.ui.crime_list
+package com.W4ereT1ckRtB1tch.criminalintent.ui.fragment.crime_list
 
 import android.os.Bundle
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.W4ereT1ckRtB1tch.criminalintent.R
 import com.W4ereT1ckRtB1tch.criminalintent.data.Crime
 import com.W4ereT1ckRtB1tch.criminalintent.data.CrimeLab
-import com.W4ereT1ckRtB1tch.criminalintent.ui.crime.CrimeActivity
-import com.W4ereT1ckRtB1tch.criminalintent.ui.crime.CrimePagerActivity
+import com.W4ereT1ckRtB1tch.criminalintent.ui.fragment.crime.CrimePagerActivity
 
 class CrimeListFragment : Fragment() {
 
@@ -87,7 +87,7 @@ class CrimeListFragment : Fragment() {
         fun bind(crime: Crime) {
             mCrime = crime
             titleTextView.text = mCrime.title
-            dateTextView.text = mCrime.date.toString()
+            dateTextView.text = DateFormat.getDateFormat(requireActivity()).format(mCrime.date)
             solvedImageView.visibility = if (mCrime.solved) View.VISIBLE else View.INVISIBLE
         }
 

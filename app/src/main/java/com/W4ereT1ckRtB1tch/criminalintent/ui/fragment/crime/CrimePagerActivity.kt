@@ -1,4 +1,4 @@
-package com.W4ereT1ckRtB1tch.criminalintent.ui.crime
+package com.W4ereT1ckRtB1tch.criminalintent.ui.fragment.crime
 
 import android.content.Context
 import android.content.Intent

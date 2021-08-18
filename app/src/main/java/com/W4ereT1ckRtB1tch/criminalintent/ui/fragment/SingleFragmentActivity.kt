@@ -1,8 +1,9 @@
-package com.W4ereT1ckRtB1tch.criminalintent
+package com.W4ereT1ckRtB1tch.criminalintent.ui.fragment
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.W4ereT1ckRtB1tch.criminalintent.R
 
 abstract class SingleFragmentActivity : AppCompatActivity() {
 
