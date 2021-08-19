@@ -5,8 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.text.format.DateFormat.*
-
+import android.text.format.DateFormat.getDateFormat
+import android.text.format.DateFormat.getTimeFormat
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,6 +39,7 @@ class CrimeFragment : Fragment() {
         private const val DIALOG_DATE = "DialogDate"
         private const val DIALOG_TIME = "DialogTime"
         private const val REQUEST_DATE = 0
+        private const val REQUEST_TIME = 1
 
         fun newInstance(crimeId: UUID): CrimeFragment {
             val args = Bundle()
@@ -99,6 +101,8 @@ class CrimeFragment : Fragment() {
 
             val fragmentManager = parentFragmentManager
             val dialog = TimePickerFragment.newInstance(mCrime.time)
+            // FIXME: 18.08.2021 deprecated
+            dialog.setTargetFragment(this, REQUEST_TIME)
             dialog.show(fragmentManager, DIALOG_TIME)
         }
 
@@ -111,10 +115,19 @@ class CrimeFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode != Activity.RESULT_OK) return
 
+        Log.d("TAG", "onActivityResult: $requestCode")
+        Log.d("TAG", "onActivityResult: $resultCode")
         when (requestCode) {
             REQUEST_DATE -> {
                 val date = data?.getSerializableExtra(DatePickerFragment.EXTRA_DATE) as Date
                 mCrime.date = date
+                updateDateTime()
+            }
+
+            REQUEST_TIME -> {
+                val time = data?.getSerializableExtra(TimePickerFragment.EXTRA_TIME) as Date
+                mCrime.time = time
+                Log.d("TAG", "onActivityResult: $time")
                 updateDateTime()
             }
         }

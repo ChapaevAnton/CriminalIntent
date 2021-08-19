@@ -1,7 +1,9 @@
 package com.W4ereT1ckRtB1tch.criminalintent.ui.dialog
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.TimePicker
@@ -15,6 +17,7 @@ class TimePickerFragment : DialogFragment() {
 
     companion object {
         private const val ARC_TIME = "time"
+        const val EXTRA_TIME = "com.android.criminal_intent.time"
 
         fun newInstance(time: Date): TimePickerFragment {
             val args = Bundle()
@@ -47,8 +50,22 @@ class TimePickerFragment : DialogFragment() {
         return AlertDialog.Builder(requireActivity())
             .setView(view)
             .setTitle(R.string.time_picker_title)
-            .setPositiveButton(android.R.string.ok, null)
+            .setPositiveButton(android.R.string.ok) { dialog, which ->
+                val selectedTime = Calendar.getInstance().apply {
+                    set(Calendar.HOUR_OF_DAY, timePicker.hour)
+                    set(Calendar.MINUTE, timePicker.minute)
+                }.time
+                setResult(Activity.RESULT_OK, selectedTime)
+            }
             .create()
+    }
+
+    // FIXME: 18.08.2021 deprecated
+    private fun setResult(resultCode: Int, time: Date) {
+        if (targetFragment == null) return
+        val intent = Intent()
+        intent.putExtra(EXTRA_TIME, time)
+        targetFragment?.onActivityResult(targetRequestCode, resultCode, intent)
     }
 
 }
