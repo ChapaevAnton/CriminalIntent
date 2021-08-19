@@ -8,9 +8,7 @@ import android.text.TextWatcher
 import android.text.format.DateFormat.getDateFormat
 import android.text.format.DateFormat.getTimeFormat
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.widget.AppCompatCheckBox
@@ -53,7 +51,7 @@ class CrimeFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        setHasOptionsMenu(true)
         val crimeId: UUID = arguments?.getSerializable(ARG_CRIME_ID) as UUID
         dateFormat = getDateFormat(requireActivity())
         timeFormat = getTimeFormat(requireActivity())
@@ -80,7 +78,7 @@ class CrimeFragment : Fragment() {
         mTimeButton = view.findViewById(R.id.crime_time)
 
         mTitleFiled.setText(mCrime.title)
-                mTitleFiled.addTextChangedListener(onTextChanged = { text, start, count, after ->
+        mTitleFiled.addTextChangedListener(onTextChanged = { text, start, count, after ->
             mCrime.title = text.toString()
         })
 
@@ -105,6 +103,22 @@ class CrimeFragment : Fragment() {
         mSolvedField.isChecked = mCrime.solved
         mSolvedField.setOnCheckedChangeListener { _, isChecked ->
             mCrime.solved = isChecked
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_crime, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.delete_crime -> {
+                CrimeLab[requireActivity()]?.deleteCrime(mCrime.id)
+                requireActivity().finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

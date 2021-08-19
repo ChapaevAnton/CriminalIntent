@@ -27,12 +27,15 @@ class CrimeLab private constructor(context: Context) {
         crimes.add(crime)
     }
 
+    fun deleteCrime(id: UUID) {
+        crimes.remove(getCrime(id))
+    }
+
     fun getCrimes(): List<Crime> {
         return crimes
     }
 
     fun getCrime(id: UUID): Crime? {
-
         return crimes.find { it.id == id }
     }
 
