@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.widget.AppCompatCheckBox
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import com.W4ereT1ckRtB1tch.criminalintent.R
 import com.W4ereT1ckRtB1tch.criminalintent.data.Crime
@@ -79,14 +80,8 @@ class CrimeFragment : Fragment() {
         mTimeButton = view.findViewById(R.id.crime_time)
 
         mTitleFiled.setText(mCrime.title)
-        mTitleFiled.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                mCrime.title = s.toString()
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
+                mTitleFiled.addTextChangedListener(onTextChanged = { text, start, count, after ->
+            mCrime.title = text.toString()
         })
 
         updateDateTime()
@@ -97,6 +92,7 @@ class CrimeFragment : Fragment() {
             dialog.setTargetFragment(this, REQUEST_DATE)
             dialog.show(fragmentManager, DIALOG_DATE)
         }
+
         mTimeButton.setOnClickListener {
 
             val fragmentManager = parentFragmentManager

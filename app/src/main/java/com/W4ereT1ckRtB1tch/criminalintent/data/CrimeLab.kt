@@ -10,12 +10,7 @@ class CrimeLab private constructor(context: Context) {
 
     init {
         crimes = ArrayList()
-        for (i in 0..99) {
-            val crime = Crime()
-            crime.title = "Crime #$i"
-            crime.solved = i % 2 == 0
-            crimes.add(crime)
-        }
+
     }
 
     companion object {
@@ -26,6 +21,10 @@ class CrimeLab private constructor(context: Context) {
             }
             return crimeLab
         }
+    }
+
+    fun addCrime(crime: Crime) {
+        crimes.add(crime)
     }
 
     fun getCrimes(): List<Crime> {

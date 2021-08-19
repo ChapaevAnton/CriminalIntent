@@ -2,11 +2,10 @@ package com.W4ereT1ckRtB1tch.criminalintent.ui.fragment.crime_list
 
 import android.os.Bundle
 import android.text.format.DateFormat
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +19,17 @@ class CrimeListFragment : Fragment() {
     private lateinit var mRecyclerView: RecyclerView
     private var crimeAdapter: CrimeAdapter? = null
     private var updatePosition = -1
+    private var isVisibleSubtitle = false
+
+
+    companion object {
+        const val SAVED_SUBTITLE_VISIBLE = "subtitle"
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,6 +41,11 @@ class CrimeListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (savedInstanceState != null) {
+            isVisibleSubtitle = savedInstanceState.getBoolean(SAVED_SUBTITLE_VISIBLE, false)
+        }
+
         mRecyclerView = view.findViewById(R.id.crime_recycler_view)
         mRecyclerView.layoutManager = LinearLayoutManager(requireActivity())
 
@@ -38,9 +53,48 @@ class CrimeListFragment : Fragment() {
 
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_crime_list, menu)
+
+        val subtitleItem: MenuItem = menu.findItem(R.id.show_subtitle)
+
+        if (isVisibleSubtitle) subtitleItem.setTitle(R.string.hide_subtitle) else subtitleItem.setTitle(
+            R.string.show_subtitle
+        )
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.new_crime -> {
+                val crime = Crime()
+                CrimeLab[requireActivity()]?.addCrime(crime)
+                val intent = CrimePagerActivity.newIntent(requireActivity(), crime.id)
+                startActivity(intent)
+                true
+            }
+            R.id.show_subtitle -> {
+                isVisibleSubtitle = !isVisibleSubtitle
+                requireActivity().invalidateOptionsMenu()
+                updateSubtitle()
+                true
+            }
+
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         updateUI()
+    }
+
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(SAVED_SUBTITLE_VISIBLE, isVisibleSubtitle)
     }
 
     private fun updateUI() {
@@ -66,6 +120,22 @@ class CrimeListFragment : Fragment() {
                 crimeAdapter?.notifyDataSetChanged()
             }
         }
+
+        updateSubtitle()
+    }
+
+
+    private fun updateSubtitle() {
+        val crimeLab = CrimeLab[requireActivity()]
+        var crimeCount = 0
+        crimeLab?.getCrimes()?.size?.let { crimeCount = it }
+        val subtitle =
+            if (isVisibleSubtitle) resources.getQuantityString(
+                R.plurals.subtitle_plurals,
+                crimeCount, crimeCount
+            ) else null
+        val activity = requireActivity() as AppCompatActivity
+        activity.supportActionBar?.subtitle = subtitle
     }
 
     private inner class CrimeHolder(layoutInflater: LayoutInflater, parent: ViewGroup) :
