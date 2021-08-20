@@ -1,16 +1,19 @@
 package com.W4ereT1ckRtB1tch.criminalintent.data
 
 import android.content.Context
+import android.database.sqlite.SQLiteDatabase
+import com.W4ereT1ckRtB1tch.criminalintent.database.CrimeBaseHelper
 import java.util.*
 import kotlin.collections.ArrayList
 
 class CrimeLab private constructor(context: Context) {
 
     private val crimes: MutableList<Crime>
+    private val mContext:Context = context.applicationContext
+    private val mDataBase:SQLiteDatabase = CrimeBaseHelper(mContext).writableDatabase
 
     init {
         crimes = ArrayList()
-
     }
 
     companion object {
