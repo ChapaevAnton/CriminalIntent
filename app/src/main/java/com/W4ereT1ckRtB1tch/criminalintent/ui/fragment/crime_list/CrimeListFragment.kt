@@ -118,9 +118,8 @@ class CrimeListFragment : Fragment() {
                 mRecyclerView.adapter = crimeAdapter
             }
         } else {
-
+            crimes?.let { crimeAdapter?.crimes = it }
             //OPTIMIZE uses notifyItemChanged(int)
-
             //FIXME no update item resume from CrimePagerActivity
             if (updatePosition > -1) {
                 //crimeAdapter?.notifyItemChanged(updatePosition)
@@ -184,7 +183,7 @@ class CrimeListFragment : Fragment() {
 
     }
 
-    private inner class CrimeAdapter(private val crimes: List<Crime>) :
+    private inner class CrimeAdapter(var crimes: List<Crime>) :
         RecyclerView.Adapter<CrimeHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CrimeHolder {

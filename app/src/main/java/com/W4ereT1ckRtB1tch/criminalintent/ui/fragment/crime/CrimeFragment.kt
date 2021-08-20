@@ -62,6 +62,11 @@ class CrimeFragment : Fragment() {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        CrimeLab[requireActivity()]?.updateCrime(mCrime)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
