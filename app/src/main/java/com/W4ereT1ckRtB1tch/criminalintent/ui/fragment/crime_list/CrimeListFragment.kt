@@ -2,8 +2,11 @@ package com.W4ereT1ckRtB1tch.criminalintent.ui.fragment.crime_list
 
 import android.os.Bundle
 import android.text.format.DateFormat
+import android.util.Log
 import android.view.*
+import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -17,10 +20,11 @@ import com.W4ereT1ckRtB1tch.criminalintent.ui.fragment.crime.CrimePagerActivity
 class CrimeListFragment : Fragment() {
 
     private lateinit var mRecyclerView: RecyclerView
+    private lateinit var mButtonNewCrime: Button
+    private lateinit var mLinearLayout: LinearLayout
     private var crimeAdapter: CrimeAdapter? = null
     private var updatePosition = -1
     private var isVisibleSubtitle = false
-
 
     companion object {
         const val SAVED_SUBTITLE_VISIBLE = "subtitle"
@@ -48,9 +52,11 @@ class CrimeListFragment : Fragment() {
 
         mRecyclerView = view.findViewById(R.id.crime_recycler_view)
         mRecyclerView.layoutManager = LinearLayoutManager(requireActivity())
+        mButtonNewCrime = view.findViewById(R.id.new_crime)
+        mButtonNewCrime.setOnClickListener { newCrime() }
+        mLinearLayout = view.findViewById(R.id.crime_list_empty)
 
         updateUI()
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -67,10 +73,7 @@ class CrimeListFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.new_crime -> {
-                val crime = Crime()
-                CrimeLab[requireActivity()]?.addCrime(crime)
-                val intent = CrimePagerActivity.newIntent(requireActivity(), crime.id)
-                startActivity(intent)
+                newCrime()
                 true
             }
             R.id.show_subtitle -> {
@@ -91,10 +94,17 @@ class CrimeListFragment : Fragment() {
         updateUI()
     }
 
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean(SAVED_SUBTITLE_VISIBLE, isVisibleSubtitle)
+    }
+
+
+    private fun newCrime() {
+        val crime = Crime()
+        CrimeLab[requireActivity()]?.addCrime(crime)
+        val intent = CrimePagerActivity.newIntent(requireActivity(), crime.id)
+        startActivity(intent)
     }
 
     private fun updateUI() {
@@ -120,22 +130,26 @@ class CrimeListFragment : Fragment() {
                 crimeAdapter?.notifyDataSetChanged()
             }
         }
-
         updateSubtitle()
+        updateEmptyList()
     }
 
-
     private fun updateSubtitle() {
-        val crimeLab = CrimeLab[requireActivity()]
-        var crimeCount = 0
-        crimeLab?.getCrimes()?.size?.let { crimeCount = it }
+        val crimeSize = CrimeLab[requireActivity()]?.getCrimes()?.size ?: -1
         val subtitle =
             if (isVisibleSubtitle) resources.getQuantityString(
                 R.plurals.subtitle_plurals,
-                crimeCount, crimeCount
+                crimeSize, crimeSize
             ) else null
         val activity = requireActivity() as AppCompatActivity
         activity.supportActionBar?.subtitle = subtitle
+    }
+
+    private fun updateEmptyList() {
+        val crimeSize = CrimeLab[requireActivity()]?.getCrimes()?.size ?: -1
+        Log.d("TAG", "updateEmptyList: $crimeSize")
+        if (crimeSize == 0) mLinearLayout.visibility =
+            View.VISIBLE else mLinearLayout.visibility = View.INVISIBLE
     }
 
     private inner class CrimeHolder(layoutInflater: LayoutInflater, parent: ViewGroup) :
@@ -147,12 +161,9 @@ class CrimeListFragment : Fragment() {
         }
 
         private lateinit var mCrime: Crime
-
-
         private val titleTextView: TextView = itemView.findViewById(R.id.crime_title)
         private val dateTextView: TextView = itemView.findViewById(R.id.crime_date)
         private val solvedImageView: ImageView = itemView.findViewById(R.id.crime_solved)
-
 
         fun bind(crime: Crime) {
             mCrime = crime
@@ -193,6 +204,5 @@ class CrimeListFragment : Fragment() {
         }
 
     }
-
 
 }
