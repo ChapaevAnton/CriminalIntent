@@ -3,8 +3,6 @@ package com.W4ereT1ckRtB1tch.criminalintent.ui.fragment.crime
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.text.format.DateFormat.getDateFormat
 import android.text.format.DateFormat.getTimeFormat
 import android.util.Log

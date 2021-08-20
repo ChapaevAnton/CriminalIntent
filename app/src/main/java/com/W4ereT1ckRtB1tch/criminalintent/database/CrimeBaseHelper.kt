@@ -28,5 +28,4 @@ class CrimeBaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAM
         TODO("Not yet implemented")
     }
 
-
 }

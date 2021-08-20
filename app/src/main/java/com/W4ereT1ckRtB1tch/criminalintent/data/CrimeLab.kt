@@ -10,7 +10,6 @@ import java.util.*
 
 class CrimeLab private constructor(context: Context) {
 
-
     private val mContext: Context = context.applicationContext
     private val mDataBase: SQLiteDatabase = CrimeBaseHelper(mContext).writableDatabase
 
